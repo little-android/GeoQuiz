@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">GeoQuiz</string>
-    <string name="question_text">Peking is the capital of China.</string>
     <string name="true_button">True</string>
     <string name="false_button">False</string>
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
+    <string name="next_button">Next</string>
+    <string name="question_1">Peking is the capital of China.</string>
+    <string name="question_2">London is the capital of French.</string>
+    <string name="question_3">Russian is the largest country.</string>
 </resources>
