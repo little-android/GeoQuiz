@@ -2,7 +2,8 @@ package com.codve.geoquiz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.nfc.Tag;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
+    private Button mCheatButton;
     private TextView mQuestionTextView; // 文本框
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index"; // 保存当前的题目索引.
@@ -27,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0; // 当前题目索引
-
+    private static final int REQUEST_CODE_CHEAT = 0; // 请求代码
+    private boolean mIsCheater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestions.length;
+                mIsCheater = false;
                 updateQuestion();
+            }
+        });
+
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean answerIsTrue = mQuestions[mCurrentIndex].isAnswerTrue();
+                Intent intent = CheatActivity.newIntent(MainActivity.this, answerIsTrue);
+                startActivityForResult(intent, REQUEST_CODE_CHEAT);
             }
         });
 
@@ -77,35 +91,17 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
 
-    // 覆盖声明周期方法
     @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart() called.");
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume() called.");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d(TAG, "onPause() called.");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop() called.");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "onDestroy() called.");
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+        }
     }
 
     private void updateQuestion() {
@@ -117,12 +113,15 @@ public class MainActivity extends AppCompatActivity {
         boolean answerIsTrue = mQuestions[mCurrentIndex].isAnswerTrue();
 
         int messageResourceId = 0;
-        if (userPressedTrue == answerIsTrue) {
-            messageResourceId = R.string.correct_toast;
+        if (mIsCheater) {
+            messageResourceId = R.string.judgment_toast;
         } else {
-            messageResourceId = R.string.incorrect_toast;
+            if (userPressedTrue == answerIsTrue) {
+                messageResourceId = R.string.correct_toast;
+            } else {
+                messageResourceId = R.string.incorrect_toast;
+            }
         }
-
         Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT)
                 .show();
     }
