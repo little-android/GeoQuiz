@@ -5,6 +5,7 @@
     <string name="correct_toast">Correct!</string>
     <string name="incorrect_toast">Incorrect!</string>
     <string name="next_button">Next</string>
+    <string name="pre_button">Prev</string>
     <string name="question_1">Peking is the capital of China.</string>
     <string name="question_2">London is the capital of French.</string>
     <string name="question_3">Russian is the largest country.</string>
