@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestions.length;
+                if (mCurrentIndex < mQuestions.length - 1) {
+                    mCurrentIndex ++;
+                    mIsCheater = false;
+                }
                 updateQuestion();
             }
         });
