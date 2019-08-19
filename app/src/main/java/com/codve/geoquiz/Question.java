@@ -2,8 +2,8 @@ package com.codve.geoquiz;
 
 public class Question {
 
-    private int mTextResourceId;
-    private boolean mAnswerTrue;
+    private int mTextResourceId; // 代表题目文本的 id
+    private boolean mAnswerTrue; // 正确答案
 
     public Question(int TextResourceId, boolean AnswerTrue) {
         this.mTextResourceId = TextResourceId;
