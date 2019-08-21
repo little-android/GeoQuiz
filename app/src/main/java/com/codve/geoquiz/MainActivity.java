@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0; // 当前题目索引
-    private static final int REQUEST_CODE_CHEAT = 0; // 请求代码
+    private static final int REQUEST_CODE_CHEAT = 0; // 请求码
     private boolean mIsCheater;
 
     @Override
