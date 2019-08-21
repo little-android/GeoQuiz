@@ -18,6 +18,7 @@ public class CheatActivity extends AppCompatActivity {
             "com.codve.geoquiz.answer_shown";
 
     private boolean mAnswerIsTrue;
+    private boolean mAnswerIsShown;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
 
@@ -28,7 +29,19 @@ public class CheatActivity extends AppCompatActivity {
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
+        if (savedInstanceState != null) {
+            mAnswerIsShown = savedInstanceState.getBoolean(EXTRA_ANSWER_SHOWN, false);
+            setAnswerShowResult(mAnswerIsShown); // 这一步打包数据
+        }
+
         mAnswerTextView = (TextView) findViewById(R.id.answer_text_view);
+        if (mAnswerIsShown) {
+            if (mAnswerIsTrue) {
+                mAnswerTextView.setText(R.string.true_button);
+            } else {
+                mAnswerTextView.setText(R.string.false_button);
+            }
+        }
 
         mShowAnswerButton = (Button) findViewById(R.id.show_answer_button);
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
@@ -39,10 +52,17 @@ public class CheatActivity extends AppCompatActivity {
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
-                setAnswerShowResult(true); // 这一步打包数据
+                mAnswerIsShown = true;
+                setAnswerShowResult(mAnswerIsShown); // 这一步打包数据
             }
         });
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean(EXTRA_ANSWER_SHOWN, mAnswerIsShown);
     }
 
     public static Intent newIntent(Context packageContext, boolean answerIsTrue) {

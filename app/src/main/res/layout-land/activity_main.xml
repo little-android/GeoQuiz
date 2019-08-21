@@ -37,12 +37,19 @@
         android:layout_gravity="bottom|center_horizontal"
         android:text="@string/cheat_button" />
 
-    <Button
+    <ImageButton
+        android:id="@+id/pre_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:src="@drawable/arrow_left"
+        android:contentDescription="@string/pre_button"/>
+
+    <ImageButton
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:text="@string/next_button"
-        android:drawableEnd="@drawable/arrow_right"
-        android:drawablePadding="4dp"/>
+        android:src="@drawable/arrow_right"
+        android:contentDescription="@string/next_button"/>
 </FrameLayout>

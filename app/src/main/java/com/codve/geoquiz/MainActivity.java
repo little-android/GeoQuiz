@@ -13,6 +13,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index"; // 保存当前的题目索引.
+    private static final String KEY_IS_CHEATER = "is_cheater"; // 保存是否有作弊
 
     // 问题数组
     private Question[] mQuestions = new Question[]{
@@ -40,7 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CHEAT = 0; // 请求代码
     private boolean mIsCheater;
 
+    // TODO 这里需要持久化存储, 把数据库复习完后再来处理这里
     private Map<Integer, Boolean> mFinishedQuestions; // 已完成的题目
+    private Map<Integer, Boolean> mCheatRecord = new Hashtable<>(); // 作弊记录
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
         }
 
         mFinishedQuestions = new Hashtable<>();
@@ -123,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        savedInstanceState.putBoolean(KEY_IS_CHEATER, mIsCheater);
     }
 
     @Override
@@ -193,4 +199,10 @@ public class MainActivity extends AppCompatActivity {
         }
         return num;
     }
+
+    // 存储作弊记录
+
+
+    // 查询作弊记录
+
 }
