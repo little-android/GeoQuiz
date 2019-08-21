@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,9 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_CODE_CHEAT = 0; // 请求代码
     private boolean mIsCheater;
 
-    // TODO 这里需要持久化存储, 把数据库复习完后再来处理这里
-    private Map<Integer, Boolean> mFinishedQuestions; // 已完成的题目
-    private Map<Integer, Boolean> mCheatRecord = new Hashtable<>(); // 作弊记录
+    private FinishedQuestions mFinishedQuestions; // 已完成的题目
+    private CheatedQuestions mCheatedQuestions; // 作弊记录
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
             mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER, false);
         }
 
-        mFinishedQuestions = new Hashtable<>();
+        mFinishedQuestions = FinishedQuestions.get();
+        mCheatedQuestions = CheatedQuestions.get();
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mCurrentIndex < mQuestions.length - 1) {
                     mCurrentIndex ++;
-                    mIsCheater = false;
+                    mIsCheater = mCheatedQuestions.isCheated(mCurrentIndex);
                 }
                 updateQuestion();
             }
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (mCurrentIndex < mQuestions.length - 1) {
                     mCurrentIndex ++;
-                    mIsCheater = false;
+                    mIsCheater = mCheatedQuestions.isCheated(mCurrentIndex);
                 }
                 updateQuestion();
             }
@@ -141,6 +142,9 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             mIsCheater = CheatActivity.wasAnswerShown(data);
+            if (mIsCheater) {
+                mCheatedQuestions.add(mCurrentIndex);
+            }
         }
     }
 
@@ -152,10 +156,11 @@ public class MainActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue) {
         int messageResourceId = 0;
 
-        if (checkFinish(mCurrentIndex)) { // 如果已经回答了问题, 提前结束
+        if (mFinishedQuestions.isFinished(mCurrentIndex)) { // 如果已经回答了问题, 提前结束
             messageResourceId = R.string.finished_toast;
             Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT)
                     .show();
+            getResultToast();
             return;
         }
 
@@ -166,43 +171,26 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (userPressedTrue == answerIsTrue) {
                 messageResourceId = R.string.correct_toast;
-                mFinishedQuestions.put(mCurrentIndex, true);
+                mFinishedQuestions.add(mCurrentIndex, true);
             } else {
                 messageResourceId = R.string.incorrect_toast;
-                mFinishedQuestions.put(mCurrentIndex, false);
+                mFinishedQuestions.add(mCurrentIndex, false);
             }
         }
         Toast.makeText(this, messageResourceId, Toast.LENGTH_SHORT)
                 .show();
 
+        getResultToast();
+    }
+
+    private void getResultToast() {
         if (mCurrentIndex == mQuestions.length - 1) {
-            String message = "you have correctly answered " + calcAnswer();
-            message += "/" + mQuestions.length + " questions";
+            String message = "you have correctly answered " + mFinishedQuestions.getCorrectCount();
+            message += "/" + mFinishedQuestions.size() + " questions";
             Toast toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.TOP, 0, 0);
             toast.show();
         }
     }
-
-    // 检查问题有没有作答
-    private boolean checkFinish(int currentIndex) {
-        return mFinishedQuestions.containsKey(currentIndex);
-    }
-
-    // 计算回答正确的数量
-    private int calcAnswer() {
-        int num = 0;
-        for (int key : mFinishedQuestions.keySet()) {
-            if (mFinishedQuestions.get(key)) {
-                num ++;
-            }
-        }
-        return num;
-    }
-
-    // 存储作弊记录
-
-
-    // 查询作弊记录
 
 }
