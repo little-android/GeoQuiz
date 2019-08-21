@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,7 @@ public class CheatActivity extends AppCompatActivity {
     private boolean mAnswerIsShown;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
+    private TextView mVersionTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,10 @@ public class CheatActivity extends AppCompatActivity {
                 setAnswerShowResult(mAnswerIsShown); // 这一步打包数据
             }
         });
+
+        mVersionTextView = (TextView) findViewById(R.id.version_text_view);
+        String api_level = getString(R.string.api_level, Build.VERSION.SDK_INT);
+        mVersionTextView.setText(api_level);
 
     }
 

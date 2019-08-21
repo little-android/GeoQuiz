@@ -14,4 +14,5 @@
     <string name="question_1">Peking is the capital of China.</string>
     <string name="question_2">London is the capital of French.</string>
     <string name="question_3">Russian is the largest country.</string>
+    <string name="api_level">API Level %1$d</string>
 </resources>
